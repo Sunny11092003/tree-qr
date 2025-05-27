@@ -1,11 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Tree QR Viewer</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sidebar UI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 400;
+      background-color: #f9f9fb;
+    }
+
+    .sidebar {
+      width: 280px;
+      height: 100vh;
+      background-color: #f7f8f9;
+      padding: 24px 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #eee;
+    }
+
+    .top {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .workspace {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .workspace img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+
+    .workspace-info {
+      display: flex;
+      flex-direction: column;
+      margin-left: 10px;
+      flex: 1;
+    }
+
+    .workspace-info span:first-child {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .workspace-info span:last-child {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    nav {
+      padding-left: 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #4b5563;
+      font-weight: 400;
+      font-size: 14px;
+      position: relative;
+      text-decoration: none;
+      padding: 8px 0;
+      margin-bottom: 8px;
+    }
+
+    .nav-item.active {
+      color: #6c4cff;
+      font-weight: 500;
+    }
+
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      left: -20px;
+      height: 100%;
+      width: 2px;
+      background-color: #6c4cff;
+      border-radius: 1px;
+    }
+
+    .nav-item.logout {
+      color: #ef4444;
+      font-weight: 500;
+    }
+
+    .notification-badge {
+      background-color: #ef4444;
+      color: white;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 999px;
+      position: absolute;
+      right: 0;
+    }
+
+    .bottom {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4px 0;
+      font-size: 13px;
+      background-color: #e8eaec;
+      border-radius: 6px;
+      margin-top: auto;
+      height: auto;
+      width: auto;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        padding: 10px;
+        overflow-x: auto;
+        border-right: none;
+        border-top: 1px solid #eee;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+      }
+
+      .top {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .logo {
+        display: none;
+      }
+
+      .workspace {
+        padding: 6px;
+        gap: 6px;
+        flex: none;
+      }
+
+      .workspace-info {
+        display: none;
+      }
+
+      nav {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 15px;
+        padding-left: 0;
+      }
+
+      .nav-item {
+        margin-bottom: 0;
+        font-size: 12px;
+        padding: 6px 4px;
+        white-space: nowrap;
+      }
+
+      .bottom {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>🌳 Welcome to Tree QR Viewer</h1>
-  <p>This page is hosted on Render using just a single HTML file.</p>
+
+  <div class="sidebar">
+    <div class="top">
+      <div class="logo">
+        <img src="static/images/cropped-gc-png-file-2022-2.webp" alt="Logo" style="height: 40px; width: 40px;" />
+        <span style="font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 600; color: #2e7d32;">
+          Green Circle
+        </span>
+      </div>
+
+      <div class="workspace">
+        <img src="https://ui-avatars.com/api/?name=GC&background=00a884&color=fff" alt="Sample Image" />
+        <div class="workspace-info">
+          <span style="font-family: 'Inter', sans-serif; font-weight: 600; margin-bottom: 5px; font-size:14px;">Volunteer 2434</span>
+          <span style="font-family: 'Inter', sans-serif;">10 entries</span>
+        </div>
+        <i data-feather="chevron-down" style="color: #9ca3af;" width="16" height="16"></i>
+      </div>
+
+      <nav>
+        <a href="#" class="nav-item"><i data-feather="home"></i> Home</a>
+        <a href="#" class="nav-item active"><i data-feather="grid"></i> Library</a>
+        <a href="#" class="nav-item"><i data-feather="check-circle"></i> Published</a>
+        <a href="#" class="nav-item">
+          <i data-feather="bell"></i> Notifications
+          <span class="notification-badge">9</span>
+        </a>
+        <a href="#" class="nav-item"><i data-feather="settings"></i> Settings</a>
+      </nav>
+    </div>
+
+    <div class="bottom">
+      <a href="/logout" class="nav-item" style="color: #6b7280;"><i data-feather="log-out"></i> Logout</a>
+    </div>
+  </div>
+
+  <script>
+    feather.replace();
+
+    const navItems = document.querySelectorAll('.nav-item');
+    let clickedItem = document.querySelector('.nav-item.active');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', function () {
+        if (clickedItem) clickedItem.classList.remove('active');
+        this.classList.add('active');
+        clickedItem = this;
+      });
+
+      item.addEventListener('mouseenter', function () {
+        if (this !== clickedItem) this.classList.add('hovering');
+      });
+
+      item.addEventListener('mouseleave', function () {
+        if (this !== clickedItem) this.classList.remove('hovering');
+      });
+    });
+  </script>
+
 </body>
 </html>
