@@ -1,59 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Map with Current Location</title>
-  <meta charset="utf-8" />
+  <title>Auto GPS Location Prompt</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    #map {
-      height: 500px;
-      width: 100%;
-    }
+    #map { height: 90vh; width: 100%; }
   </style>
 </head>
 <body>
 
-<h2>Current Location Map</h2>
+<h2>Tracking Your Location...</h2>
 <div id="map"></div>
 
-<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
-  // Initialize the map
-  const map = L.map('map').setView([0, 0], 2); // Default to world view
+  const map = L.map('map').setView([0, 0], 2); // Default view
 
-  // Load and display OpenStreetMap tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // Try to get user location
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        map.setView([lat, lon], 15); // Zoom to user location
-        L.marker([lat, lon]).addTo(map)
-          .bindPopup("You are here!")
-          .openPopup();
-      },
-      function(error) {
-        alert("Error getting location: " + error.message);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      }
-    );
-  } else {
-    alert("Geolocation is not supported by this browser.");
-  }
+  window.onload = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          map.setView([lat, lon], 15);
+          L.marker([lat, lon]).addTo(map)
+            .bindPopup("Your Current Location").openPopup();
+        },
+        (err) => {
+          alert("Location access denied or unavailable: " + err.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
 </script>
 
 </body>
