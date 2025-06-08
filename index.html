@@ -1,50 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Auto GPS Location Prompt</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    #map { height: 90vh; width: 100%; }
-  </style>
+  <meta charset="UTF-8">
+  <title>Firebase Realtime DB Fetch</title>
 </head>
 <body>
+  <h1>Firebase Data Viewer</h1>
+  <div id="output">Loading...</div>
 
-<h2>Tracking Your Location...</h2>
-<div id="map"></div>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-  const map = L.map('map').setView([0, 0], 2); // Default view
+  <script>
+    // 🔐 Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHlppkQ0CGV3cxs3IT4ybrOC2p4QmZ8lo",
+    authDomain: "treeqrsystem.firebaseapp.com",
+    databaseURL: "https://treeqrsystem-default-rtdb.firebaseio.com",
+    projectId: "treeqrsystem",
+    storageBucket: "treeqrsystem.appspot.com",
+    messagingSenderId: "391723015713",
+    appId: "1:391723015713:web:2f85beae0f23fb89b44d60",
+    measurementId: "G-HLS37X56H7"
+    };
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
+    // ✅ Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
-  window.onload = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          map.setView([lat, lon], 15);
-          L.marker([lat, lon]).addTo(map)
-            .bindPopup("Your Current Location").openPopup();
-        },
-        (err) => {
-          alert("Location access denied or unavailable: " + err.message);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      );
+    // 🔍 Get ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id'); // example: ?id=user123
+
+    const outputDiv = document.getElementById('output');
+
+    if (id) {
+      const dataRef = database.ref('your-data-node/' + id); // adjust the path as needed
+
+      dataRef.once('value')
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            outputDiv.innerText = JSON.stringify(data, null, 2);
+          } else {
+            outputDiv.innerText = 'No data found for ID: ' + id;
+          }
+        })
+        .catch((error) => {
+          outputDiv.innerText = 'Error fetching data: ' + error;
+        });
     } else {
-      alert("Geolocation is not supported by your browser.");
+      outputDiv.innerText = 'No ID found in URL (use ?id=yourId)';
     }
-  };
-</script>
-
+  </script>
 </body>
 </html>
