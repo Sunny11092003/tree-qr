@@ -80,30 +80,39 @@
           const d = snapshot.val();
           treeDiv.innerHTML = `
             <p><strong>Name:</strong> ${d.Name || 'n/a'}</p>
-            <p><strong>Botanical:</strong> ${d.Botanical || 'n/a'}</p>
-            <p><strong>Description:</strong> ${d.Description || 'n/a'}</p>
-            <p><strong>Category:</strong> ${d.Category || 'n/a'}</p>
-            <p><strong>Medicinal Benefits:</strong> ${d.MedicinalBenefits || 'n/a'}</p>
-            <p><strong>Environmental Benefits:</strong> ${d.EnvironmentalBenefits || 'n/a'}</p>
+            <p><strong>Botanical:</strong> ${d.botanical || 'n/a'}</p>
+            <p><strong>Description:</strong> ${d.description || 'n/a'}</p>
+            <p><strong>Category:</strong> ${d.category || 'n/a'}</p>
+            <p><strong>Medicinal Benefits:</strong> ${d.medicinalBenefits || 'n/a'}</p>
+            <p><strong>Environmental Benefits:</strong> ${d.environmentalBenefits || 'n/a'}</p>
             <p><strong>Scientific Classification:</strong></p>
             <ul>
-              <li>Kingdom: ${d.Classification?.Kingdom || 'n/a'}</li>
-              <li>Phylum: ${d.Classification?.Phylum || 'n/a'}</li>
-              <li>Class: ${d.Classification?.Class || 'n/a'}</li>
-              <li>Order: ${d.Classification?.Order || 'n/a'}</li>
-              <li>Family: ${d.Classification?.Family || 'n/a'}</li>
-              <li>Genus: ${d.Classification?.Genus || 'n/a'}</li>
-              <li>Species: ${d.Classification?.Species || 'n/a'}</li>
+              <li>Kingdom: ${d.classification?.kingdom || 'n/a'}</li>
+              <li>Phylum: ${d.classification?.phylum || 'n/a'}</li>
+              <li>Class: ${d.classification?.class || 'n/a'}</li>
+              <li>Order: ${d.classification?.order || 'n/a'}</li>
+              <li>Family: ${d.classification?.family || 'n/a'}</li>
+              <li>Genus: ${d.classification?.genus || 'n/a'}</li>
+              <li>Species: ${d.classification?.species || 'n/a'}</li>
             </ul>
             <h4 style="margin-top:20px;">Images:</h4>
             <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-              ${(d.Images || []).map(img => `
+              ${(d.images || []).map(img => `
                 <div style="text-align:center;">
-                  <img src="${img.URL}" alt="${img.ImageType}" />
-                  <p>${img.ImageType}</p>
+                  <img src="${img.url}" alt="${img.imageType}" />
+                  <p>${img.imageType}</p>
                 </div>
               `).join('')}
             </div>
+            <p><strong>Location:</strong></p>
+            <ul>
+              <li>Address: ${d.location?.address || 'n/a'}</li>
+              <li>City: ${d.location?.city || 'n/a'}</li>
+              <li>Coordinates: ${d.location?.coordinates || 'n/a'}</li>
+              <li>Site: ${d.location?.site || 'n/a'}</li>
+            </ul>
+            <p><strong>Last Updated:</strong> ${d.lastUpdated || 'n/a'}</p>
+            <p><strong>Native:</strong> ${d.native || 'n/a'}</p>
           `;
         } else {
           treeDiv.innerHTML = '<p>No data found for ID.</p>';
