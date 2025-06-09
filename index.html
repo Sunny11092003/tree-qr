@@ -1,21 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Firebase Tree Viewer</title>
+  <meta charset="UTF-8" />
+  <title>Tree Info</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      padding: 20px;
+    }
+    .form-container {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    .form-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #2e7d32;
+    }
+    .form-body p {
+      margin: 5px 0;
+    }
+    .form-body ul {
+      padding-left: 20px;
+    }
+    img {
+      width: 150px;
+      height: auto;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
-  <h1>Firebase Tree Data</h1>
-  <pre id="output">Loading...</pre>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<div class="form-container">
+  <div class="form-header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+      <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+      <path d="m9 15 2 2 4-4"/>
+    </svg>
+    <h3>Complete</h3>
+  </div>
 
-  <script>
-    // ✅ Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBHlppkQ0CGV3cxs3IT4ybrOC2p4QmZ8lo",
+  <div class="form-body" id="treeData">
+    <p>Loading...</p>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBHlppkQ0CGV3cxs3IT4ybrOC2p4QmZ8lo",
     authDomain: "treeqrsystem.firebaseapp.com",
     databaseURL: "https://treeqrsystem-default-rtdb.firebaseio.com",
     projectId: "treeqrsystem",
@@ -23,36 +64,58 @@
     messagingSenderId: "391723015713",
     appId: "1:391723015713:web:2f85beae0f23fb89b44d60",
     measurementId: "G-HLS37X56H7"
-    };
+  };
 
-    // ✅ Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
 
-    // ✅ Get ID from URL
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id'); // ?id=-OSDqcgV8ES9tyXFIqJW
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const treeDiv = document.getElementById('treeData');
 
-    const outputDiv = document.getElementById('output');
+  if (id) {
+    database.ref('trees/' + id).once('value')
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          const d = snapshot.val();
+          treeDiv.innerHTML = `
+            <p><strong>Name:</strong> ${d.Name || 'n/a'}</p>
+            <p><strong>Botanical:</strong> ${d.Botanical || 'n/a'}</p>
+            <p><strong>Description:</strong> ${d.Description || 'n/a'}</p>
+            <p><strong>Category:</strong> ${d.Category || 'n/a'}</p>
+            <p><strong>Medicinal Benefits:</strong> ${d.MedicinalBenefits || 'n/a'}</p>
+            <p><strong>Environmental Benefits:</strong> ${d.EnvironmentalBenefits || 'n/a'}</p>
+            <p><strong>Scientific Classification:</strong></p>
+            <ul>
+              <li>Kingdom: ${d.Classification?.Kingdom || 'n/a'}</li>
+              <li>Phylum: ${d.Classification?.Phylum || 'n/a'}</li>
+              <li>Class: ${d.Classification?.Class || 'n/a'}</li>
+              <li>Order: ${d.Classification?.Order || 'n/a'}</li>
+              <li>Family: ${d.Classification?.Family || 'n/a'}</li>
+              <li>Genus: ${d.Classification?.Genus || 'n/a'}</li>
+              <li>Species: ${d.Classification?.Species || 'n/a'}</li>
+            </ul>
+            <h4 style="margin-top:20px;">Images:</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+              ${(d.Images || []).map(img => `
+                <div style="text-align:center;">
+                  <img src="${img.URL}" alt="${img.ImageType}" />
+                  <p>${img.ImageType}</p>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        } else {
+          treeDiv.innerHTML = '<p>No data found for ID.</p>';
+        }
+      })
+      .catch(err => {
+        treeDiv.innerHTML = '<p>Error: ' + err + '</p>';
+      });
+  } else {
+    treeDiv.innerHTML = '<p>No ID found in URL.</p>';
+  }
+</script>
 
-    if (id) {
-      const dataRef = database.ref('trees/' + id);
-
-      dataRef.once('value')
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            outputDiv.textContent = JSON.stringify(data, null, 2);
-          } else {
-            outputDiv.textContent = 'No data found for ID: ' + id;
-          }
-        })
-        .catch((error) => {
-          outputDiv.textContent = 'Error fetching data: ' + error;
-        });
-    } else {
-      outputDiv.textContent = 'No ID found in URL (use ?id=treeId)';
-    }
-  </script>
 </body>
 </html>
